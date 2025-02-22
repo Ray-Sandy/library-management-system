@@ -1,80 +1,126 @@
-Cara Mengatur Proyek
-Persyaratan Sistem
-PHP >= 8.0
+# Library Management System
 
-Composer
+## 📌 Setup Project Securely
 
-MySQL atau database lain yang didukung Laravel
+### Backend (Laravel)
+1. **Clone Repository:**
+   ```bash
+   git clone <repo-url>
+   cd library-management-system
+   ```
+2. **Install Dependencies:**
+   ```bash
+   composer install
+   ```
+3. **Set Up Environment:**
+   - Copy `.env.example` to `.env`
+   ```bash
+   cp .env.example .env
+   ```
+   - Update `.env` with database credentials securely:
+     ```env
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=your_database_name
+     DB_USERNAME=your_database_user
+     DB_PASSWORD=your_secure_password
+     ```
+   - **Security Considerations:** Jangan pernah commit `.env` ke GitHub. Gunakan `.gitignore` untuk memastikan file ini tetap privat.
 
-Node.js (untuk mengelola aset frontend)
+4. **Generate Application Key:**
+   ```bash
+   php artisan key:generate
+   ```
+5. **Migrate & Seed Database:**
+   ```bash
+   php artisan migrate --seed
+   ```
+   - Seeder akan membuat akun admin dan member secara otomatis.
+   - **Admin Account:**
+     - Email: `admin@example.com`
+     - Password: `password`
+   - **Member Account:**
+     - Email: `member@example.com`
+     - Password: `password`
+   - **PENTING:** Ubah password default setelah instalasi pertama!
 
-Langkah-langkah Setup
-Clone Repository:
+6. **Run Application Securely:**
+   ```bash
+   php artisan serve
+   ```
+   - Pastikan **HTTPS digunakan di production** untuk melindungi data.
+   - Gunakan **rate limiting** pada endpoint API untuk mencegah abuse.
 
-bash
-Copy
-git clone https://github.com/username/repository-name.git
-cd repository-name
-Install Dependencies:
+---
 
-Install dependensi PHP menggunakan Composer:
+### Frontend (Telpmate AdminLTE)
+1. **Buka folder proyek frontend:**
+   ```bash
+   cd public/AdminLTE
+   ```
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Jalankan frontend:**
+   ```bash
+   npm run dev
+   ```
 
-bash
-Copy
-composer install
-Install dependensi frontend menggunakan npm:
+---
 
-bash
-Copy
-npm install
-npm run dev
-Setup Environment:
+## 🔒 Security Considerations
+- **Database Credentials:** Jangan pernah hardcode kredensial dalam kode.
+- **Sanitize Input:** Gunakan Laravel ORM (Eloquent) untuk mencegah SQL Injection.
+- **Hashing Password:** Semua password dienkripsi menggunakan `bcrypt`.
+- **Rate Limiting:** Laravel memiliki fitur bawaan untuk membatasi jumlah request per user.
+- **CORS Protection:** Pastikan hanya domain yang diperbolehkan bisa mengakses API.
+- **XSS Protection:** Gunakan `e($variable)` atau Blade escaping.
 
-Salin file .env.example ke .env:
+---
 
-bash
-Copy
-cp .env.example .env
-Generate key aplikasi:
+## 📝 API Documentation
+Gunakan Swagger/OpenAPI untuk mendokumentasikan semua endpoint.
 
-bash
-Copy
-php artisan key:generate
-Konfigurasi Database:
+1. **Install Swagger untuk Laravel** (Jika belum terpasang):
+   ```bash
+   composer require darkaonline/l5-swagger
+   ```
+2. **Generate Dokumentasi API:**
+   ```bash
+   php artisan l5-swagger:generate
+   ```
+3. **Akses Dokumentasi:** Buka browser dan navigasikan ke:
+   ```
+   http://127.0.0.1:8000/api/documentation
+   ```
 
-Buka file .env dan sesuaikan konfigurasi database:
+Dokumentasi mencakup:
+- **Security Headers** seperti penggunaan JWT untuk autentikasi.
+- **Metode Autentikasi** menggunakan Bearer Token.
+- **Error Responses** terkait keamanan, seperti 401 Unauthorized dan 403 Forbidden.
 
-env
-Copy
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nama_database
-DB_USERNAME=username_database
-DB_PASSWORD=password_database
-Jalankan Migrasi dan Seeder:
+---
 
-Jalankan migrasi untuk membuat tabel database:
+## 🔗 SQL Queries dalam Backend
+Semua query SQL menggunakan Laravel Query Builder atau Eloquent ORM untuk keamanan.
+- File terkait database ada di `app/Models/` dan `database/migrations/`.
+- Semua query sudah diproteksi dari SQL Injection.
 
-bash
-Copy
-php artisan migrate
-Jalankan seeder untuk mengisi data awal:
+---
 
-bash
-Copy
-php artisan db:seed
-Seeder akan membuat dua pengguna:
+## ✅ Production Deployment Checklist
+- Gunakan **HTTPS** untuk semua komunikasi.
+- Simpan **env variables** dengan aman (misalnya menggunakan `.env` atau secret manager).
+- **Nonaktifkan Debug Mode** sebelum deployment:
+  ```env
+  APP_DEBUG=false
+  ```
+- Gunakan **Firewall dan Rate Limiting** untuk melindungi API.
 
-Admin: admin@example.com dengan password password.
+---
 
-Member: member@example.com dengan password password.
+## 📞 Support
+Jika mengalami masalah, silakan buat issue di repository ini atau hubungi tim pengembang.
 
-Jalankan Aplikasi:
-
-Jalankan server Laravel:
-
-bash
-Copy
-php artisan serve
-Buka browser dan akses http://localhost:8000.
