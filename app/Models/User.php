@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -18,9 +19,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 
+        'email', 
+        'password', 
+        'role_id',
     ];
 
     /**
@@ -39,7 +41,23 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    // Relationship dengan Role
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    // Cek apakah user adalah Admin
+    public function isAdmin()
+    {
+        return $this->role && $this->role->name === 'Admin';
+    }
+
+    // Cek apakah user adalah Member
+    public function isMember()
+    {
+        return $this->role && $this->role->name === 'Member';
+    }
 }
