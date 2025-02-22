@@ -5,7 +5,7 @@
 ### Backend (Laravel)
 1. **Clone Repository:**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/Ray-Sandy/library-management-system.git
    cd library-management-system
    ```
 2. **Install Dependencies:**
@@ -67,60 +67,4 @@
    ```bash
    npm run dev
    ```
-
----
-
-## 🔒 Security Considerations
-- **Database Credentials:** Jangan pernah hardcode kredensial dalam kode.
-- **Sanitize Input:** Gunakan Laravel ORM (Eloquent) untuk mencegah SQL Injection.
-- **Hashing Password:** Semua password dienkripsi menggunakan `bcrypt`.
-- **Rate Limiting:** Laravel memiliki fitur bawaan untuk membatasi jumlah request per user.
-- **CORS Protection:** Pastikan hanya domain yang diperbolehkan bisa mengakses API.
-- **XSS Protection:** Gunakan `e($variable)` atau Blade escaping.
-
----
-
-## 📝 API Documentation
-Gunakan Swagger/OpenAPI untuk mendokumentasikan semua endpoint.
-
-1. **Install Swagger untuk Laravel** (Jika belum terpasang):
-   ```bash
-   composer require darkaonline/l5-swagger
-   ```
-2. **Generate Dokumentasi API:**
-   ```bash
-   php artisan l5-swagger:generate
-   ```
-3. **Akses Dokumentasi:** Buka browser dan navigasikan ke:
-   ```
-   http://127.0.0.1:8000/api/documentation
-   ```
-
-Dokumentasi mencakup:
-- **Security Headers** seperti penggunaan JWT untuk autentikasi.
-- **Metode Autentikasi** menggunakan Bearer Token.
-- **Error Responses** terkait keamanan, seperti 401 Unauthorized dan 403 Forbidden.
-
----
-
-## 🔗 SQL Queries dalam Backend
-Semua query SQL menggunakan Laravel Query Builder atau Eloquent ORM untuk keamanan.
-- File terkait database ada di `app/Models/` dan `database/migrations/`.
-- Semua query sudah diproteksi dari SQL Injection.
-
----
-
-## ✅ Production Deployment Checklist
-- Gunakan **HTTPS** untuk semua komunikasi.
-- Simpan **env variables** dengan aman (misalnya menggunakan `.env` atau secret manager).
-- **Nonaktifkan Debug Mode** sebelum deployment:
-  ```env
-  APP_DEBUG=false
-  ```
-- Gunakan **Firewall dan Rate Limiting** untuk melindungi API.
-
----
-
-## 📞 Support
-Jika mengalami masalah, silakan buat issue di repository ini atau hubungi tim pengembang.
 
