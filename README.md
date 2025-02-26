@@ -39,10 +39,10 @@
    - Seeder akan membuat akun admin dan member secara otomatis.
    - **Admin Account:**
      - Email: `admin@example.com`
-     - Password: `password`
+     - Password: `admin123`
    - **Member Account:**
      - Email: `member@example.com`
-     - Password: `password`
+     - Password: `member123`
    - **PENTING:** Ubah password default setelah instalasi pertama!
 
 6. **Run Application Securely:**
@@ -53,18 +53,4 @@
    - Gunakan **rate limiting** pada endpoint API untuk mencegah abuse.
 
 ---
-
-### Frontend (Telpmate AdminLTE)
-1. **Buka folder proyek frontend:**
-   ```bash
-   cd public/AdminLTE
-   ```
-2. **Install Dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Jalankan frontend:**
-   ```bash
-   npm run dev
-   ```
 
