@@ -8,6 +8,8 @@
    git clone https://github.com/Ray-Sandy/library-management-system.git
    cd library-management-system
    ```
+   - Karena menggunakan template AdminLTE, pastiikan bahsa url asset sudah mengarah pada lokasi file yang tepat.
+   - 
 2. **Install Dependencies:**
    ```bash
    composer install
@@ -53,4 +55,16 @@
    - Gunakan **rate limiting** pada endpoint API untuk mencegah abuse.
 
 ---
+
+7. **Run Application Routes**
+   ```bash
+   {ip}/ 
+   ```
+   - Blank page, ada pilihan login atau register pada navbar.
+     
+7. **Alternatif Run Application **
+   ```bash
+   {ip}/login
+   ```
+   - langsung mengarah ke halaman login dan login sesuai dengan Seeder.
 
