@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -23,23 +23,24 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        // Ambil user berdasarkan email
+        $user = DB::select("SELECT * FROM users WHERE email = ? LIMIT 1", [$credentials['email']]);
 
-            // Ambil role user yang login
-            $user = Auth::user();
-
-            // Redirect berdasarkan role
-            if ($user->role->name === 'Admin') { // Periksa role langsung
-                return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('member.dashboard');
-            }
+        // Jika user tidak ditemukan atau password salah
+        if (empty($user) || !Hash::check($credentials['password'], $user[0]->password)) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        // Login user
+        Auth::loginUsingId($user[0]->id);
+        $request->session()->regenerate();
+
+        // Redirect berdasarkan role (langsung dari ENUM)
+        return $user[0]->role === 'admin' 
+            ? redirect()->route('admin.stocks.index')->with('success', "berhasil login, selamat datang !")
+            : redirect()->route('member.explore')->with('success', "selamat datang !");
     }
 
     // Tampilkan halaman register
@@ -57,21 +58,20 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Default role: Member
-        $memberRole = Role::where('name', 'Member')->first();
+        // Insert user dengan role default 'member'
+        DB::insert(
+            "INSERT INTO users (name, email, password, role, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, ?, ?)",
+            [$request->name, $request->email, Hash::make($request->password), 'member', now(), now()]
+        );
+        
 
-        // Buat user baru
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role_id' => $memberRole->id,
-        ]);
+        // Ambil user yang baru saja dibuat
+        $user = DB::select("SELECT * FROM users WHERE email = ? LIMIT 1", [$request->email]);
 
         // Login user setelah register
-        Auth::login($user);
-
-        return redirect()->route('member.dashboard');
+        Auth::loginUsingId($user[0]->id);
+        return redirect()->route('login')->with('success', "Terimakasih sudah mendaftar, selamat datang !");
     }
 
     // Logout

@@ -1,4 +1,4 @@
-@extends('auth.layout')
+@extends('auth.auth-layout')
 
 @section('auth.login')
 <div class="card">
@@ -40,7 +40,7 @@
       </div>
     </form>
     <!-- Pesan Error -->
-    @include('auth.error')
+    {{-- @include('layouts.massage') --}}
     <!-- Link Register -->
     <p class="mb-0">
         <a href="{{ route('register') }}" class="text-center">Register a new membership</a>

@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
+    public $timestamps = true;
     /**
      * The attributes that are mass assignable.
      *
@@ -22,7 +20,7 @@ class User extends Authenticatable
         'name', 
         'email', 
         'password', 
-        'role_id',
+        'role',
     ];
 
     /**
@@ -42,22 +40,19 @@ class User extends Authenticatable
      */
     protected $casts = [
         'password' => 'hashed',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-    // Relationship dengan Role
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
 
     // Cek apakah user adalah Admin
     public function isAdmin()
     {
-        return $this->role && $this->role->name === 'Admin';
+        return $this->role === 'admin';
     }
 
     // Cek apakah user adalah Member
     public function isMember()
     {
-        return $this->role && $this->role->name === 'Member';
+        return $this->role === 'member';
     }
 }

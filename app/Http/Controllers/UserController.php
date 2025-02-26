@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
@@ -13,68 +11,107 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->get();
-        return view('page.account.account', compact('users'));
+        // Ambil semua user
+        $users = DB::select("SELECT * FROM users");
+
+        return view('page.admin.account.account', compact('users'));
     }
 
     public function create()
     {   
-        $roles = Role::all(); // Ambil semua role dari database
-        return view('page.account.create', compact('roles'));
+        // Role didefinisikan langsung, karena tidak ada tabel roles
+        $roles = ['admin', 'member'];
+
+        return view('page.admin.account.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
-        Session::flash('name', $request->title);
-        Session::flash('email', $request->author);
-        Session::flash('password', $request->publisher);
-        Session::flash('role_id', $request->year);
+        Session::flash('name', $request->name);
+        Session::flash('email', $request->email);
+        Session::flash('role', $request->role);
 
+        // Validasi input
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'role_id' => 'required|exists:roles,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,member', // Validasi role sebagai enum
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
-        ]);
+        // Hash password sebelum disimpan
+        $hashedPassword = Hash::make($request->password);
+
+        // Simpan user menggunakan query SQL langsung
+        DB::insert(
+            "INSERT INTO users (name, email, password, role, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, NOW(), NOW())",
+            [
+                $request->name,
+                $request->email,
+                $hashedPassword,
+                $request->role, // Role sudah benar, tidak pakai role_id
+            ]
+        );
 
         return redirect()->route('admin.accounts.index')->with('success', 'Account created successfully.');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
-    $roles = Role::all();
-    return view('page.account.edit', compact('users', 'roles'));
+        // Ambil data user berdasarkan ID
+        $user = DB::select("SELECT * FROM users WHERE id = ?", [$id]);
+
+        if (!$user) {
+            return redirect()->route('admin.accounts.index')->with('error', 'User not found.');
+        }
+
+        // Role didefinisikan langsung karena tidak ada tabel roles
+        $roles = ['admin', 'member'];
+
+        return view('page.admin.account.edit', ['user' => $user[0], 'roles' => $roles]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
+        // Validasi input
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:8',
-            'role_id' => 'required|exists:roles,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8',
+            'role' => 'required|in:admin,member', // Validasi role enum
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-            'role_id' => $request->role_id,
-        ]);
+        // Ambil user dari database
+        $user = DB::select("SELECT * FROM users WHERE id = ?", [$id]);
+
+        if (!$user) {
+            return redirect()->route('admin.accounts.index')->with('error', 'User not found.');
+        }
+
+        // Jika password baru diisi, hash password baru, jika tidak tetap gunakan password lama
+        $password = $request->password ? Hash::make($request->password) : $user[0]->password;
+
+        // Update user menggunakan query SQL langsung
+        DB::update(
+            "UPDATE users SET name = ?, email = ?, password = ?, role = ?, updated_at = NOW() WHERE id = ?",
+            [
+                $request->name,
+                $request->email,
+                $password,
+                $request->role, // Role sudah benar
+                $id
+            ]
+        );
 
         return redirect()->route('admin.accounts.index')->with('success', 'Account updated successfully.');
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
+        // Hapus user berdasarkan ID
+        DB::delete("DELETE FROM users WHERE id = ?", [$id]);
+
         return redirect()->route('admin.accounts.index')->with('success', 'Account deleted successfully.');
     }
 }

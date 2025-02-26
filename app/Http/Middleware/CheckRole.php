@@ -4,25 +4,26 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, $role): Response
     {
+        // Ambil user yang sedang login dari auth()
+        $user = auth()->user();
+
         // Pastikan user sudah login
-        if (!Auth::check()) {
-            return redirect()->route('login');
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        // Ambil role user yang login
-        $user = Auth::user();
-
-        // Periksa role
-        if ($user->role->name !== $role) {
-            abort(403, 'Unauthorized action.');
+        // Periksa role user
+        if ($user->role != $role) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
 
         return $next($request);
     }
+
 }

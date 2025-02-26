@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable(); // Untuk email verification
             $table->string('password');
-            $table->unsignedBigInteger('role_id'); // Foreign key untuk role
+            $table->enum('role', ['admin', 'member'])->default('member'); // Role sebagai enum
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

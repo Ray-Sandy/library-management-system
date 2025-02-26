@@ -30,6 +30,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            \App\Http\Middleware\PreventBackHistory::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -54,8 +55,8 @@ class Kernel extends HttpKernel
      */
     protected $middlewareAliases = [
         'role' => \App\Http\Middleware\CheckRole::class,
-        'prevent.back.history' => \App\Http\Middleware\PreventBackHistory::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
+        'prevent.back.history' => \App\Http\Middleware\PreventBackHistory::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
