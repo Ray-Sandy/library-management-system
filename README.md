@@ -8,7 +8,7 @@
    git clone https://github.com/Ray-Sandy/library-management-system.git
    cd library-management-system
    ```
-   - Karena menggunakan template AdminLTE, pastiikan bahsa url asset sudah mengarah pada lokasi file yang tepat.
+   - Karena menggunakan template AdminLTE, pastikan url asset pada setiap views blade sudah mengarah pada lokasi file yang tepat.
      
 2. **Install Dependencies:**
    ```bash
