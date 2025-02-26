@@ -9,7 +9,7 @@
    cd library-management-system
    ```
    - Karena menggunakan template AdminLTE, pastiikan bahsa url asset sudah mengarah pada lokasi file yang tepat.
-   - 
+     
 2. **Install Dependencies:**
    ```bash
    composer install
@@ -68,3 +68,5 @@
    ```
    - langsung mengarah ke halaman login dan login sesuai dengan Seeder.
 
+8. **Info penting**
+   - Jika ada error atau masalah tolong beritahu. Terimakasih.
