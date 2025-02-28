@@ -46,8 +46,14 @@
      - Email: `member@example.com`
      - Password: `member123`
    - **PENTING:** Ubah password default setelah instalasi pertama!
-
-6. **Run Application Securely:**
+7. **Storage link:**
+   ```bash
+   php artisan storage:link
+   ```
+   - Penting untuk upload image
+   - Berfungsi Untuk menyambungkan file stock-image pada backend storage/app/public/stock-image ke frontend agar dapat di akses views pada public/storage/stck-image
+     
+7. **Run Application Securely:**
    ```bash
    php artisan serve
    ```
@@ -56,17 +62,17 @@
 
 ---
 
-7. **Run Application Routes**
+8. **Run Application Routes**
    ```bash
    {ip}/ 
    ```
    - Blank page, ada pilihan login atau register pada navbar.
      
-7. **Alternatif Run Application **
+8. **Alternatif Run Application **
    ```bash
    {ip}/login
    ```
    - langsung mengarah ke halaman login dan login sesuai dengan Seeder.
 
-8. **Info penting**
+10. **Info penting**
    - Jika ada error atau masalah tolong beritahu. Terimakasih.
