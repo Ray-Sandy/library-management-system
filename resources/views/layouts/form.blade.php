@@ -36,8 +36,15 @@
 <!-- dropzonejs -->
 <script src="{{asset('AdminLTE/plugins/dropzone/min/dropzone.min.js')}}"></script>
 
+<!-- bs-custom-file-input -->
+<script src="{{asset('AdminLTE/plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
+
 <!-- Page specific script -->
 <script>
+  $(function () {
+    bsCustomFileInput.init();
+  });
+  
   $(function () {
     //Initialize Select2 Elements
     $('.select2').select2()
@@ -170,4 +177,6 @@
     myDropzone.removeAllFiles(true)
   }
   // DropzoneJS Demo Code End
+
+  
 </script>
