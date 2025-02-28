@@ -28,7 +28,7 @@
               </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('admin.stocks.update', $stock->id) }}" method="POST">
+                    <form action="{{ route('admin.stocks.update', $stock->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -57,23 +57,33 @@
                                 <!-- ISBN -->
                                 <div class="form-group">
                                     <label for="isbn">ISBN</label>
-                                    <input type="text" class="form-control" disabled="disabled" id="isbn" name="isbn" placeholder="Enter ISBN" value="{{ $stock->isbn }}" required>
+                                    <input type="text" class="form-control" disabled="disabled" id="isbn" name="isbn" placeholder="Enter ISBN" value="{{ $stock->isbn }}">
                                 </div>
-
-                                <!-- Year -->
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <!-- Year -->
+                                        <div class="form-group">
+                                            <label for="year">Year</label>
+                                            <input type="number" class="form-control" id="year" name="year" placeholder="Enter publication year" value="{{ $stock->year }}" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-6">
+                                        <!-- Year -->
+                                        <div class="form-group">
+                                            <label for="year">Stock</label>
+                                            <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter book stocks" value="{{ $stock->stock }}" required>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label for="year">Year</label>
-                                    <input type="number" class="form-control" id="year" name="year" placeholder="Enter publication year" value="{{ $stock->year }}" required>
+                                    <label for="image" class="form-lebel">Image input</label>
+                                    <input class="form-control" type="file" id="image" name="image">
                                 </div>
-                                
-                                <!-- Year -->
-                                <div class="form-group">
-                                    <label for="year">Stock</label>
-                                    <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter book stocks" value="{{ $stock->stock }}" required>
-                                </div>
-                                
+                                @error('image')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
-                            <!-- /.col -->
                         </div>
                         <!-- /.row -->
                     

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Stock;
+use Illuminate\Support\Facades\Storage;
 
 class StockController extends Controller
 {
@@ -27,6 +28,7 @@ class StockController extends Controller
             'year' => 'required|integer|min:1900|max:' . date('Y'),
             'isbn' => 'required|string|unique:stocks,isbn',
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ],[
             'title.required' => 'Judul buku wajib diisi.',
             'title.string' => 'Judul buku harus berupa teks.',
@@ -54,7 +56,21 @@ class StockController extends Controller
             'stock.min' => 'Jumlah stok tidak boleh kurang dari 0.'
         ]);
 
-        Stock::create($request->all());
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('stock_images', 'public');
+        }
+
+        // Stock::create($request->all());
+        Stock::create([
+            'title' => $request->title,
+            'author' => $request->author,
+            'publisher' => $request->publisher,
+            'year' => $request->year,
+            'isbn' => $request->isbn,
+            'stock' => $request->stock,
+            'image' => $imagePath
+        ]);
 
         return redirect()->route('admin.stocks.index')->with('success', 'Stock added successfully.');
     }
@@ -72,11 +88,31 @@ class StockController extends Controller
             'author' => 'required|string|max:255',
             'publisher' => 'required|string|max:255',
             'year' => 'required|integer|min:1900|max:' . date('Y'),
-            'isbn' => 'required|string|unique:stocks,isbn,' . $stock->id,
+            // 'isbn' => 'required|string|unique:stocks,isbn,' . $stock->id,
             'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $stock->update($request->all());
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($stock->image) {
+                Storage::disk('public')->delete($stock->image);
+            }
+    
+            // Simpan gambar baru
+            $imagePath = $request->file('image')->store('stock_images', 'public');
+            $stock->image = $imagePath;
+        }
+
+        // $stock->update($request->all());
+        $stock->update([
+            'title' => $request->title,
+            'author' => $request->author,
+            'publisher' => $request->publisher,
+            'year' => $request->year,
+            // 'isbn' => $request->isbn,
+            // 'stock' => $request->stock,
+        ]);
 
         return redirect()->route('admin.stocks.index')->with('success', 'Stock updated successfully.');
     }
